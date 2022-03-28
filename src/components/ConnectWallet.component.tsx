@@ -1,5 +1,5 @@
 import { useEthers } from "@usedapp/core";
-import Button from "./Button";
+import Button from "./Button.component";
 
 const ConnectWallet = () => {
   const { activateBrowserWallet, account } = useEthers();

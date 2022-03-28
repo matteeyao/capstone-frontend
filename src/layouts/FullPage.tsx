@@ -1,4 +1,4 @@
-import ConnectWallet from "../components/ConnectWallet";
+import ConnectWallet from "../components/ConnectWallet.component";
 
 interface Props {
   children: React.ReactNode;
