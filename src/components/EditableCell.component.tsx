@@ -1,4 +1,4 @@
-import React from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import PropTypes, { InferProps } from "prop-types";
 
 // Create an editable cell renderer
@@ -10,9 +10,9 @@ const EditableCell: any = ({
     editableRowIndex // index of the row we requested for editing
 }: InferProps<typeof EditableCell.propTypes>) => {
     // We need to keep and update the state of the cell normally
-    const [value, setValue] = React.useState(initialValue);
+    const [value, setValue] = useState(initialValue);
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
     };
 
@@ -22,7 +22,7 @@ const EditableCell: any = ({
     };
 
     // If the initialValue is changed externall, sync it up with our state
-    React.useEffect(() => {
+    useEffect(() => {
         setValue(initialValue);
     }, [initialValue]);
 

@@ -34,7 +34,7 @@ export const getTxnData = (
     })
 );
 
-export const getMetaData = (
+export const getMetadata = (
     response: AxiosResponse<any, any> | undefined,
     transactions: Hash<Metadata>
 ) => (
