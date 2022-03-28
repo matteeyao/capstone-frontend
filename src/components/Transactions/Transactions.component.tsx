@@ -1,13 +1,12 @@
 import React from "react";
-import { BigNumber } from "@ethersproject/bignumber";
-import { formatEther } from "ethers/lib/utils";
 import { Column } from "react-table";
 
 import Table from "../Table.component";
 import useAxios from "../../shared/hooks/useAxios";
 import { useGetTransactions } from "../../shared/hooks/transactions/useGetTransactions";
-import { TransactionRaw } from "../../shared/interfaces/transactionRaw.interface";
-import { TransactionAggregate } from "../../shared/interfaces/transactionAggregate.interface";
+import { Transaction } from "../../shared/interfaces/transaction/transaction.interface";
+import { Metadata } from "../../shared/interfaces/transaction/metadata.interface";
+import { getTxnData, getMetaData } from "./Transactions.services";
 
 interface Props {
   account: any;
@@ -27,7 +26,7 @@ function Transactions({ account }: Props) {
         }
     });
 
-    const columns: Column<TransactionAggregate>[] = React.useMemo(
+    const txnColumns: Column<Transaction>[] = React.useMemo(
         () => [
             {
                 Header: 'Transaction',
@@ -45,7 +44,13 @@ function Transactions({ account }: Props) {
                         accessor: "value",
                     },
                 ]
-            },
+            }
+        ],
+        []
+    );
+
+    const metaColumns: Column<Metadata>[] = React.useMemo(
+        () => [
             {
                 Header: 'Metadata',
                 columns: [
@@ -75,29 +80,8 @@ function Transactions({ account }: Props) {
         []
     );
 
-    const shortenAddress = (str: String): String => (
-        str.slice(0, 6) + '...' + str.slice(-4)
-    );
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const getData = () => (
-        response?.data.result.map((etherscanTransaction: TransactionRaw) => {
-            const { hash: txnHash, timeStamp, value } = etherscanTransaction;
-            const { from, to, summary, location } = transactions[txnHash] || {}
-
-            return {
-                txnHash: shortenAddress(txnHash),
-                date: new Date(parseInt(timeStamp) * 1000).toUTCString(),
-                value: formatEther(BigNumber.from(value)).slice(0, 8) + " ETH",
-                from,
-                to,
-                summary,
-                location,
-            };
-        })
-    );
-
-    const data = React.useMemo(() => getData(), [getData]);
+    const txnData = React.useMemo(() => getTxnData(response), [response]);
+    const metaData = React.useMemo(() => getMetaData(response, transactions), [response, transactions]);
 
     return (
         <div className="mx-auto">
@@ -108,8 +92,11 @@ function Transactions({ account }: Props) {
                 <p>{error.message}</p>
             )}
             {!loading && !error && (
-                <div>
-                    <Table columns={columns} data={data} />
+                <div className="min-h-screen flex items-center justify-center">
+                    <div className="grid grid-cols-2 gap-4">
+                        <Table columns={txnColumns} data={txnData} />
+                        <Table columns={metaColumns} data={metaData} />
+                    </div>
                 </div>
             )}
         </div>

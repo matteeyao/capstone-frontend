@@ -25,7 +25,7 @@ const useAxios = (axiosParams: AxiosRequestConfig) => {
     if(axiosParams.method === "GET" || axiosParams.method === "get"){
       fetchData(axiosParams);
     }
-  },[]);
+  }, []);
 
   return { response, error, loading };
 }

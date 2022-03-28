@@ -2,10 +2,10 @@ import React from "react";
 import { Column, useTable, TableOptions } from "react-table";
 
 import PropTypes, { InferProps } from "prop-types";
-import { TransactionAggregate } from "../shared/interfaces/transactionAggregate.interface";
+import { Transaction } from "../shared/interfaces/transaction/transaction.interface";
 
 function Table({ columns, data }: InferProps<typeof Table.propTypes>) {
-    const options: TableOptions<TransactionAggregate> = {
+    const options: TableOptions<Transaction> = {
         columns,
         data,
     };

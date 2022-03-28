@@ -1,4 +1,4 @@
-export interface TransactionRaw {
+export interface Transaction {
     blockNumber: string
     timeStamp: string
     hash: string

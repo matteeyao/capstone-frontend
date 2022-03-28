@@ -1,5 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
-import { TransactionMetadata } from "../../interfaces/transactionMetadata.interface";
+import { Metadata } from "../../interfaces/transaction/metadata.interface";
 
 const FETCH_TRANSACTION = gql`
     query FetchTransaction($address: String!, $txnHash: String!) {
@@ -15,7 +15,7 @@ const FETCH_TRANSACTION = gql`
 }
 `;
 
-export const useFetchTransaction = (address: string, txnHash: string): TransactionMetadata => {
+export const useFetchTransaction = (address: string, txnHash: string): Metadata => {
     const { data } = useQuery(FETCH_TRANSACTION, {
         variables: { address, txnHash }
     });
