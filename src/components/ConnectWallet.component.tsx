@@ -5,7 +5,7 @@ const ConnectWallet = () => {
   const { activateBrowserWallet, account } = useEthers();
 
   return (
-    <div className="fixed top-14 right-20 text-center">
+    <div className="absolute top-14 right-20 text-center">
       <Button onClick={() => activateBrowserWallet()}>
         {account ? "Connected" : "Connect"}
       </Button>

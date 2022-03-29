@@ -4,14 +4,16 @@ import { Column } from "react-table";
 import Table from "../Table.component";
 import { Transaction } from "../../shared/interfaces/transaction/transaction.interface";
 import { Metadata } from "../../shared/interfaces/transaction/metadata.interface";
+import EditableTable from "../EditableTable/EditableTable.component";
 
 interface Props {
-  txnData: Transaction[]
-  metaData: Metadata[]
+    account: string;
+    txnData: Transaction[];
+    metaData: Metadata[];
 }
 
-function Transactions({ txnData, metaData }: Props) {
-    const txnColumns: Column<Transaction>[] = React.useMemo(
+function Transactions({ account, txnData, metaData }: Props) {
+    const txnColumns: Column<Transaction>[] = useMemo(
         () => [
             {
                 Header: 'Transaction',
@@ -34,7 +36,7 @@ function Transactions({ txnData, metaData }: Props) {
         []
     );
 
-    const metaColumns: Column<Metadata>[] = React.useMemo(
+    const metaColumns: Column<Metadata>[] = useMemo(
         () => [
             {
                 Header: 'Metadata',
@@ -54,11 +56,7 @@ function Transactions({ txnData, metaData }: Props) {
                     {
                         Header: "Location",
                         accessor: "location",
-                    },
-                    {
-                        Header: "Status",
-                        accessor: "status",
-                    },
+                    }
                 ]
             } 
         ],
@@ -66,12 +64,47 @@ function Transactions({ txnData, metaData }: Props) {
     );
 
     const [metadata, setMetadata] = useState(metaData);
+    const [skipPageReset, setSkipPageReset] = useState(false)
+
+    // We need to keep the table from resetting the pageIndex when we
+    // Update data. So we can keep track of that flag with a ref.
+
+    // When our cell renderer calls updateMyData, we'll use
+    // the rowIndex, columnId and new value to update the
+    // original data
+    const updateMyData = (rowIndex: number, columnId: any, value: any) => {
+        // We also turn on the flag to not reset the page
+        setSkipPageReset(true)
+        setMetadata(old =>
+            old.map((row, index) => {
+                if (index === rowIndex) {
+                    return {
+                        ...old[rowIndex],
+                        [columnId]: value,
+                    };
+                }
+
+                return row;
+            })
+        )
+    }
 
     return (
-        <div className="min-h-screen flex items-center justify-center">
-            <div className="grid grid-cols-2 gap-4">
-                <Table columns={txnColumns} data={txnData} />
-                <Table columns={metaColumns} data={metadata} />
+        <div className="min-h-fit flex items-center justify-center">
+            <div className="grid grid-cols-3 min-w-max max-w-max px-12">
+                <div className="max-w-full col-span-1">
+                    <Table columns={txnColumns} data={txnData} />
+                </div>
+                <div className="col-span-2">
+                    <EditableTable
+                        account={account}
+                        columns={metaColumns}
+                        data={metadata}
+                        setData={setMetadata}
+                        updateMyData={updateMyData}
+                        skipPageReset={skipPageReset}
+                    />
+                </div>
             </div>
         </div>
     );

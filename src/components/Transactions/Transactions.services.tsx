@@ -3,7 +3,7 @@ import { AxiosResponse } from "axios";
 import { formatEther } from "ethers/lib/utils";
 import dateFormat from "dateformat";
 
-import { Hash } from "../../shared/hooks/transactions/useGetTransactions";
+import { Hash } from "../../shared/hooks/transactions/useFetchTransactions";
 import { Metadata } from "../../shared/interfaces/transaction/metadata.interface";
 import { Transaction } from "../../shared/interfaces/transaction/transaction.interface";
 
@@ -13,7 +13,7 @@ const shortenAddress = (str: String): String => (
 
 const readableDate = (timeStamp: string): string => {
     const datetime = new Date(parseInt(timeStamp) * 1000);
-    return dateFormat(datetime, "ddd, mmm d, yyyy, hh:MM TT")
+    return dateFormat(datetime, "dd/mm/yy hh:MM TT")
 }
 
 export const getTxnData = (
@@ -43,10 +43,11 @@ export const getMetadata = (
         const { from, to, summary, location } = transactions[txnHash] || {};
 
         return {
-            from,
-            to,
-            summary,
-            location,
+            txnHash: txnHash || "",
+            from: from || "",
+            to: to || "",
+            summary: summary || "",
+            location: location || "",
         };
     })
 );

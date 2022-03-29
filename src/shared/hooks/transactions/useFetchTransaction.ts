@@ -4,7 +4,6 @@ import { Metadata } from "../../interfaces/transaction/metadata.interface";
 const FETCH_TRANSACTION = gql`
     query FetchTransaction($address: String!, $txnHash: String!) {
     transaction(address: $address, txnHash: $txnHash) {
-        id
         address
         txnHash
         summary
@@ -20,5 +19,5 @@ export const useFetchTransaction = (address: string, txnHash: string): Metadata 
         variables: { address, txnHash }
     });
 
-    return data?.transaction
+    return data?.transaction;
 };

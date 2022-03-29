@@ -21,16 +21,16 @@ function Table({ columns, data }: InferProps<typeof Table.propTypes>) {
 
     return (
         <div className="mt-2 flex flex-col">
-            <div className="-my-2 overflow-x-auto -mx-4 sm:-mx-6 lg:-mx-8">
-                <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-                    <div className="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+            <div className="-my-2 overflow-x-auto">
+                <div className="py-2 align-middle inline-block min-w-full sm:px-0 lg:px-2">
+                    <div className="max-w-full shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                         <table {...getTableProps()} className="min-w-full divide-y divide-gray-200">
                             <thead>
                                 {headerGroups.map((headerGroup) => (
                                 <tr {...headerGroup.getHeaderGroupProps()}>
                                     {headerGroup.headers.map((column) => (
                                         <th 
-                                            className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+                                            className="px-3 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
                                             {...column.getHeaderProps()}
                                         >{column.render("Header")}</th>
                                     ))}
@@ -45,7 +45,7 @@ function Table({ columns, data }: InferProps<typeof Table.propTypes>) {
                                             {row.cells.map((cell) => {
                                                 return <td 
                                                     {...cell.getCellProps()}
-                                                    className="px-6 py-4 whitespace-nowrap"
+                                                    className="text-sm px-3 py-3 whitespace-nowrap"
                                                 >{cell.render("Cell")}</td>;
                                             })}
                                         </tr>
