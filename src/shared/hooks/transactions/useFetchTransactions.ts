@@ -1,10 +1,9 @@
 import { gql, useQuery } from "@apollo/client";
-import { TransactionMetadata } from "../../interfaces/transactionMetadata.interface";
+import { Metadata } from "../../interfaces/transaction/metadata.interface";
 
 const GET_TRANSACTIONS = gql`
     query FetchTransactions($address: String!) {
         transactions(address: $address) {
-            id
             address
             txnHash
             summary
@@ -15,16 +14,16 @@ const GET_TRANSACTIONS = gql`
     }
 `;
 
-interface Hash<T> {
+export interface Hash<T> {
   [key: string]: T;
 };
 
 const createTransactionsMap = (
-    transactionsList: TransactionMetadata[],
-    transactionsHash: Hash<TransactionMetadata>={}
-): Hash<TransactionMetadata> => {
-    transactionsList?.reduce<Record<string, TransactionMetadata>>(
-        (acc, transaction: TransactionMetadata) => {
+    transactionsList: Metadata[],
+    transactionsHash: Hash<Metadata>={}
+): Hash<Metadata> => {
+    transactionsList?.reduce<Record<string, Metadata>>(
+        (acc, transaction: Metadata) => {
             acc[transaction.txnHash] = transaction;
             
             return acc;
@@ -33,7 +32,7 @@ const createTransactionsMap = (
     return transactionsHash;
 };
 
-export const useGetTransactions = (address: string): Hash<TransactionMetadata> => {
+export const useFetchTransactions = (address: string | null | undefined): Hash<Metadata> => {
     const { data } = useQuery(GET_TRANSACTIONS, {
         variables: { address }
     });

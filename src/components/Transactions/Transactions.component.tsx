@@ -1,33 +1,19 @@
-import React from "react";
-import { BigNumber } from "@ethersproject/bignumber";
-import { formatEther } from "ethers/lib/utils";
+import React, { useMemo, useState } from "react";
 import { Column } from "react-table";
 
 import Table from "../Table.component";
-import useAxios from "../../shared/hooks/useAxios";
-import { useGetTransactions } from "../../shared/hooks/transactions/useGetTransactions";
-import { TransactionRaw } from "../../shared/interfaces/transactionRaw.interface";
-import { TransactionAggregate } from "../../shared/interfaces/transactionAggregate.interface";
+import { Transaction } from "../../shared/interfaces/transaction/transaction.interface";
+import { Metadata } from "../../shared/interfaces/transaction/metadata.interface";
+import EditableTable from "../EditableTable/EditableTable.component";
 
 interface Props {
-  account: any;
+    account: string;
+    txnData: Transaction[];
+    metaData: Metadata[];
 }
 
-function Transactions({ account }: Props) {
-    account = "0x8c469877b27932abdd2313c4b6bf7cff5667fdb9";
-
-    const transactions = useGetTransactions(account);
-
-    const { response, loading, error } = useAxios({
-        method: "get",
-        url: `/api?module=account&action=txlist&address=${account}&startblock=0&endblock=99999999&page=1&offset=20&sort=desc&apikey=4YT69IDTQ4BWK3QRH24AGQ4YHSC28Q1AYV`,
-        headers: {
-            accept: '*/*',
-            'Content-Type': 'application/x-www-form-urlencoded'
-        }
-    });
-
-    const columns: Column<TransactionAggregate>[] = React.useMemo(
+function Transactions({ account, txnData, metaData }: Props) {
+    const txnColumns: Column<Transaction>[] = useMemo(
         () => [
             {
                 Header: 'Transaction',
@@ -45,7 +31,13 @@ function Transactions({ account }: Props) {
                         accessor: "value",
                     },
                 ]
-            },
+            }
+        ],
+        []
+    );
+
+    const metaColumns: Column<Metadata>[] = useMemo(
+        () => [
             {
                 Header: 'Metadata',
                 columns: [
@@ -64,54 +56,56 @@ function Transactions({ account }: Props) {
                     {
                         Header: "Location",
                         accessor: "location",
-                    },
-                    {
-                        Header: "Status",
-                        accessor: "status",
-                    },
+                    }
                 ]
             } 
         ],
         []
     );
 
-    const shortenAddress = (str: String): String => (
-        str.slice(0, 6) + '...' + str.slice(-4)
-    );
+    const [metadata, setMetadata] = useState(metaData);
+    const [skipPageReset, setSkipPageReset] = useState(false)
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const getData = () => (
-        response?.data.result.map((etherscanTransaction: TransactionRaw) => {
-            const { hash: txnHash, timeStamp, value } = etherscanTransaction;
-            const { from, to, summary, location } = transactions[txnHash] || {}
+    // We need to keep the table from resetting the pageIndex when we
+    // Update data. So we can keep track of that flag with a ref.
 
-            return {
-                txnHash: shortenAddress(txnHash),
-                date: new Date(parseInt(timeStamp) * 1000).toUTCString(),
-                value: formatEther(BigNumber.from(value)).slice(0, 8) + " ETH",
-                from,
-                to,
-                summary,
-                location,
-            };
-        })
-    );
+    // When our cell renderer calls updateMyData, we'll use
+    // the rowIndex, columnId and new value to update the
+    // original data
+    const updateMyData = (rowIndex: number, columnId: any, value: any) => {
+        // We also turn on the flag to not reset the page
+        setSkipPageReset(true)
+        setMetadata(old =>
+            old.map((row, index) => {
+                if (index === rowIndex) {
+                    return {
+                        ...old[rowIndex],
+                        [columnId]: value,
+                    };
+                }
 
-    const data = React.useMemo(() => getData(), [getData]);
+                return row;
+            })
+        )
+    }
 
     return (
-        <div className="mx-auto">
-            {loading && (
-                <p>Loading...</p>
-            )}
-            {error && (
-                <p>{error.message}</p>
-            )}
-            {!loading && !error && (
-                <div>
-                    <Table columns={columns} data={data} />
+        <div className="min-h-fit flex items-center justify-center">
+            <div className="grid grid-cols-3 min-w-max max-w-max px-12">
+                <div className="max-w-full col-span-1">
+                    <Table columns={txnColumns} data={txnData} />
                 </div>
-            )}
+                <div className="col-span-2">
+                    <EditableTable
+                        account={account}
+                        columns={metaColumns}
+                        data={metadata}
+                        setData={setMetadata}
+                        updateMyData={updateMyData}
+                        skipPageReset={skipPageReset}
+                    />
+                </div>
+            </div>
         </div>
     );
 }

@@ -1,9 +1,8 @@
-export interface TransactionAggregate {
+export interface Metadata {
+    address: string
     txnHash: string
-    date: Date
-    value: string
     from: string
     to: string
     summary: string
     location: string
-};
+}

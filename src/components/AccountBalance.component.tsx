@@ -6,7 +6,7 @@ const AccountBalance = () => {
   const etherBalance = useEtherBalance(account);
 
   return (
-    <div className="w-full text-center">
+    <div className="w-full text-center text-sm">
       <p>
         <b>Account</b>: <span>{account ? account : "Please connect your wallet."}</span>
       </p>

@@ -1,4 +1,4 @@
-import React from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import PropTypes, { InferProps } from "prop-types";
 
 // Create an editable cell renderer
@@ -6,13 +6,13 @@ const EditableCell: any = ({
     value: initialValue,
     row: { index },
     column: { id },
-    updateMyData, // This is a custom function that we supplied to our table instance
+    updateMyData, // this is a custom function that we supplied to our table instance
     editableRowIndex // index of the row we requested for editing
 }: InferProps<typeof EditableCell.propTypes>) => {
     // We need to keep and update the state of the cell normally
-    const [value, setValue] = React.useState(initialValue);
+    const [value, setValue] = useState(initialValue);
 
-    const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         setValue(e.target.value);
     };
 
@@ -22,14 +22,14 @@ const EditableCell: any = ({
     };
 
     // If the initialValue is changed externall, sync it up with our state
-    React.useEffect(() => {
+    useEffect(() => {
         setValue(initialValue);
     }, [initialValue]);
 
     return index === editableRowIndex ? (
-        <input value={value} onChange={onChange} onBlur={onBlur} />
+        <input className="min-w-full" value={value} onChange={onChange} onBlur={onBlur} />
     ) : (
-        <p>{value}</p>
+        <p className="min-w-[156px] max-w-[156px] overflow-hidden text-center">{value}</p>
     );
 };
 
@@ -41,9 +41,14 @@ EditableCell.propTypes = {
         index: PropTypes.number.isRequired
     }),
     column: PropTypes.shape({
-        id: PropTypes.number.isRequired
+        id: PropTypes.string.isRequired
     }),
     updateMyData: PropTypes.func.isRequired
 };
 
-export default EditableCell;
+// Set our editable cell renderer as the default Cell renderer
+const defaultColumn = {
+  Cell: EditableCell
+};
+
+export default defaultColumn;
