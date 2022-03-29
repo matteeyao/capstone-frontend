@@ -1,5 +1,19 @@
 # Capstone Frontend
 
+## Demo
+
+### Fig. 1 Connect MetaMask wallet:
+
+![Fig. 1 Connect MetaMask wallet](docs/mod/demo/connect-wallet.gif)
+
+### Fig. 2 Add transaction metadata
+
+![Fig. 2 Add transaction metadata](docs/mod/demo/add-metadata.gif)
+
+### Fig. 3 Edit transaction metadata
+
+![Fig. 3 Edit transaction metadata](docs/mod/demo/edit-metadata.gif)
+
 ## Available Scripts
 
 In the project directory, you can run:
