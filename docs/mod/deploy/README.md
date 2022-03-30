@@ -86,3 +86,18 @@ We can add this command to our `package.json` file too as a `deploy` script.
 
 Let's build our app using `yarn build` which helps to create an optimized production build.
 
+Next, let's run the CLI command given above or if you have setup your publish script in `package.json`, we can use `yarn deploy`.
+
+That's it, our app is now deployed.
+
+To find where our app is hosted (the website link), go to AWS S3 console and click on the bucket you created.
+
+Go to the **Properties** tab and scroll down all the way to the "Static hosting" section and our URL will be there:
+
+![Fig. 9 Static hosting Bucket website endpoint](https://miro.medium.com/max/1400/1*SbuQahvHex1KetHvddN2rw.png)
+
+Click on it and your app will open up in a new tab
+
+## Conclusion
+
+We have successfully deployed our React app to Amazon S3. This is a great choice to quickly deploy and test your React prototypes and share it with others. It’s really easy and quick to deploy as well.
